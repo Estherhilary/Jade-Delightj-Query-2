@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script
+        src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous"></script>
+
+<title>Jade Delight</title>
+</head>
+
+<body>
+<script language="javascript">
+
+function MenuItem(name, cost)
+{
+	this.name = name;
+	this.cost=cost;
+}
+
+menuItems = new Array(
+	new MenuItem("Chicken Chop Suey", 4.5),
+	new MenuItem("Sweet and Sour Pork", 6.25),
+	new MenuItem("Shrimp Lo Mein", 5.25),
+	new MenuItem("Moo Shi Chicken", 6.5),
+	new MenuItem("Fried Rice", 2.35)
+);
+
+function makeSelect(name, minRange, maxRange)
+{
+	var t= "";
+	t = "<select name='" + name + "' size='1'>";
+	for (j=minRange; j<=maxRange; j++)
+	   t += "<option>" + j + "</option>";
+	t+= "</select>"; 
+	return t;
+}
+</script>
+
+<h1>Jade Delight</h1>
+<form name="myForm">
+
+<p>First Name*: <input type="text"  name='fname' /></p>
+<p>Last Name*:  <input type="text"  name='lname' /></p>
+<p>Street: <input type="text"  name='street' /></p>
+<p>City: <input type="text"  name='city' /></p>
+<p>Phone*: <input type="text"  name='phone' /></p>
+<p> 
+	<input type="radio"  name="p_or_d" value = "pickup" checked="checked"/>Pickup  
+	<input type="radio"  name='p_or_d' value = 'delivery'/>
+	Delivery
+</p>
+<table border="0" cellpadding="3">
+  <tr>
+    <th>Select Item</th>
+    <th>Item Name</th>
+    <th>Cost Each</th>
+    <th>Total Cost</th>
+  </tr>
+<script language="javascript">
+
+  var s = "";
+  for (i=0; i< menuItems.length; i++)
+  {
+	  s += "<tr><td>";
+	  s += makeSelect("quan" + i, 0, 10);
+	  s += "</td><td>" + menuItems[i].name + "</td>";
+	  s += "<td> $ " + menuItems[i].cost.toFixed(2) + "</td>";
+	  s += "<td>$<input type='text' name='cost'/></td></tr>";
+  }
+  document.writeln(s);
+</script>
+</table>
+
+<p>Subtotal:
+   $<input type="text"  name='subtotal' id="subtotal" />
+</p>
+<p>Mass tax 6.25%:
+  $ <input type="text"  name='tax' id="tax" />
+</p>
+<p>Total: $ <input type="text"  name='total' id="total" />
+</p>
+
+<input type = "button" value = "Submit Order"/>
+
+</form>
+
+<script language="javascript">
+  function showOrHideStreetAndCity(value){
+   
+   if(value == "pickup") {
+
+     $(`input[name="street"]`).parent().hide();
+     $(`input[name="city"]`).parent().hide();
+   }
+   else{
+     
+     $(`input[name="street"]`).parent().show();
+     $(`input[name="city"]`).parent().show();
+    }
+  }
+  
+
+  showOrHideStreetAndCity($(`input[name="p_or_d"]`).val());
+
+  $(`input[name="p_or_d"]`).on('change', function(event){
+    showOrHideStreetAndCity(event.target.value);
+  })
+
+  for (let i=0; i < menuItems.length; i++) {
+    const quantitySelect = $(`select`)[i];
+
+    $(quantitySelect).on("change", function(event){
+      const newSelectValue = Number(event.target.value) || 0;
+      const costInput = $(`input[name="cost"]`)[i];
+
+      $(costInput).val((newSelectValue * menuItems[i].cost).toFixed(2));
+    })
+
+    $(quantitySelect).on("change", function (){
+      var total = 0;
+
+      for (let i=0; i < menuItems.length; i++) {
+        const quantitySelect = $(`select`)[i];
+        const quantity = Number($(quantitySelect).val()) || 0;
+
+        const itemTotal = quantity * menuItems[i].cost;
+
+        total = total + itemTotal;
+      }
+      
+      const tax = total * 0.0625;
+
+      const subtotalInput = $(`#subtotal`);
+      $(subtotalInput).val(total.toFixed(2));
+
+      const taxInput = $(`#tax`);
+      $(taxInput).val(tax.toFixed(2));
+      
+      const overall = total + tax;
+
+      const totalInput = $(`#total`);
+      $(totalInput).val(overall.toFixed(2));
+    })
+          
+  }
+  
+  $(`input[type="button"]`).on('click', function(){
+    let fname = $(`input[name="fname"]`).val();
+    let lname = $(`input[name="lname"]`).val();
+    let phone = $(`input[name="phone"]`).val();
+    let city = $(`input[name="city"]`).val();
+    let street = $(`input[name="street"]`).val();
+            
+    if(fname == "" || lname == ""){
+        alert("Both First and Last Name must be filled out");
+        return false;
+    }
+    //if phone z is less than 10 chars
+    if(phone.length < 10 || isNaN(phone)){
+        alert("Phone number must be valid");
+        return false;
+    }
+
+    if($(`input[name="street"]`).val() == "" && $(`input[name="city"]`).val() == ""){
+      alert("Both city and street must be filled out");
+      return false;
+
+    if($(`input[name="total"]`).val() == "") {
+      alert("At least one item must be ordered");
+      return false;
+    }
+  }
+  
+      const p_or_d = $(`input[name="p_or_d"]`).val();
+      var time = new Date();
+      var minutes = time.getMinutes();
+      var hours = time.getHours();
+      var timeNow = hours +" : "+ minutes;
+
+    if(p_or_d == "pickup"){
+      
+      if(minutes == 45){
+        var pickupTime = (hours+1) + " : 00";
+      }
+      else if(minutes < 45){
+        var deliveryTime = hours + " : " + (minutes+15);
+      }
+      
+      else{
+        newMins = minutes + 15 - 60; 
+        newHr = hours + 1;
+        var deliveryTime = hours + " : " + newMins;
+      }
+      alert("Your order will be ready by " + deliveryTime);
+    }
+    
+    else if(p_or_d == "delivery"){
+      if(minutes == 30){
+        var pickupTime = (hours+1) + " : 00";
+      }
+      else if(minutes < 30){
+        var pickupTime = hours + " : " + (minutes+30);
+      }
+      
+      else{
+        newMins = minutes + 30 - 60; 
+        newHr = hours + 1;
+        var pickupTime = hours + " : " + newMins;
+      }
+      alert("Your order will be ready by " + pickupTime);
+    }
+
+   
+      var newWindow = window.open("https://estherhilary.github.io/assignment8/jade_delight_edited.html");
+      newWindow.alert("Thank you for your order!  ");
+      
+    
+
+  })
+
+  
+
+</script>
+</body>
+</html>
